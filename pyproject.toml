@@ -27,5 +27,6 @@ dev = [
     "psycopg2-binary (>=2.9.13,<3.0.0)",
     "python-dotenv (>=1.2.3,<2.0.0)",
     "pillow (>=12.3.0,<13.0.0)",
-    "ipython (>=9.17.1,<10.0.0)"
+    "ipython (>=9.17.1,<10.0.0)",
+    "django-apscheduler (>=0.7.0,<0.8.0)"
 ]
