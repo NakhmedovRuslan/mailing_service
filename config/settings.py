@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
-from dotenv import load_dotenv
-from pathlib import Path
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
 load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,13 +36,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "mailing",
+    "users",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "mailing",
 ]
 
 MIDDLEWARE = [
@@ -130,25 +133,29 @@ STATIC_URL = "static/"
 
 MAILERS = {
     "default": {
-        "BACKEND": os.getenv("EMAIL_BACKEND"),
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
         "OPTIONS": {
             "host": os.getenv("EMAIL_HOST"),
-            "port": int(os.getenv("EMAIL_PORT")) if os.getenv("EMAIL_PORT") else None,
+            "port": int(os.getenv("EMAIL_PORT", "465")),
             "username": os.getenv("EMAIL_HOST_USER"),
             "password": os.getenv("EMAIL_HOST_PASSWORD"),
-            "use_tls": os.getenv("EMAIL_USE_TLS") == "True",
             "use_ssl": os.getenv("EMAIL_USE_SSL") == "True",
+            "use_tls": os.getenv("EMAIL_USE_TLS") == "True",
         },
+        "FROM_EMAIL": os.getenv("EMAIL_HOST_USER"),
     },
 }
-
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+PASSWORD_RESET_TIMEOUT = 3600
 
-LOGIN_REDIRECT_URL = 'mailing:index'
-LOGIN_URL = 'users:login' ############ ИСПРАВИТЬ ЕСЛИ ДРУГОЕ НАЗВАНИЕ БУДЕТ
+AUTH_USER_MODEL = "users.CustomUser"
+
+LOGIN_REDIRECT_URL = "mailing:index"
+LOGIN_URL = "users:login"
+LOGOUT_REDIRECT_URL = "mailing:index"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = BASE_DIR / "media"
 
 CACHE_ENABLED = True
 if CACHE_ENABLED:

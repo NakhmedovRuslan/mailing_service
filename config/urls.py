@@ -23,7 +23,8 @@ from config import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("mailing/", include("mailing.urls"))
+    path("mailing/", include("mailing.urls")),
+    path("users/", include("users.urls")),
 ]
 
 if settings.DEBUG:
