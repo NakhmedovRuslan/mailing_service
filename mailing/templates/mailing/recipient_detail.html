@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ recipient.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'mailing:recipient_list' %}">Получатели</a>
+            </li>
+            <li class="breadcrumb-item active">{{ recipient.full_name }}</li>
+        </ol>
+    </nav>
+    <p class="text-muted mb-2">Добавил получателя: {{ recipient.owner.username }}</p>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ recipient.full_name }}</h4>
+            <span class="text-muted small">ID: {{ recipient.pk }}</span>
+        </div>
+
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">
+                    <a href="mailto:{{ recipient.email }}">{{ recipient.email }}</a>
+                </dd>
+
+                <dt class="col-sm-3">Ф.И.О.</dt>
+                <dd class="col-sm-9">{{ recipient.full_name }}</dd>
+
+                <dt class="col-sm-3">Комментарий</dt>
+                <dd class="col-sm-9">
+                    {% if recipient.comments %}
+                        <div style="white-space: pre-wrap;">{{ recipient.comments }}</div>
+                    {% else %}
+                        <span class="text-muted">—</span>
+                    {% endif %}
+                </dd>
+            </dl>
+        </div>
+
+        <div class="card-footer bg-white border-top">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <a href="{% url 'mailing:recipient_list' %}" class="btn btn-outline-secondary">
+                    Назад
+                </a>
+
+
+                {% if object.owner == request.user %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'mailing:recipient_update' recipient.pk %}"
+                           class="btn btn-outline-primary">
+                            Изменить
+                        </a>
+                        <a href="{% url 'mailing:recipient_delete' recipient.pk %}"
+                            class="btn btn-outline-danger">
+                            Удалить
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h5>Участвует в рассылках ({{ recipient.mailings.count }})</h5>
+
+        {% if recipient.mailings.all %}
+            <ul class="list-group">
+                {% for mailing in recipient.mailings.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'mailing:mailing_detail' mailing.pk %}">
+                            Рассылка №{{ mailing.pk }}
+                        </a>
+                        <span class="badge bg-secondary">{{ mailing.get_status_display }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Этот получатель пока не участвует ни в одной рассылке.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

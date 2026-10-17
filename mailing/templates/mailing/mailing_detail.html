@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Рассылка №{{ mailing.pk }}</h1>
+
+    {% if messages %}
+        {% for m in messages %}
+            <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <p>Статус: {{ mailing.get_status_display }}</p>
+    <p>Начало: {{ mailing.start_time }}</p>
+    <p>Окончание: {{ mailing.end_time }}</p>
+    <p>Сообщение: {{ mailing.message }}</p>
+    <p>Получателей: {{ mailing.recipients.count }}</p>
+    <p>Создал рассылку: {{ mailing.owner.username }}</p>
+
+    <form method="post" action="{% url 'mailing:mailing_send' mailing.pk %}">
+        {% csrf_token %}
+        <button type="submit">Запустить рассылку</button>
+    </form>
+    {% if perms.mailing.can_disable_mailing and not mailing.is_disabled %}
+        <form method="post" action="{% url 'mailing:mailing_disable' mailing.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit">Отключить рассылку</button>
+        </form>
+    {% endif %}
+{% endblock %}

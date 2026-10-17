@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2>Статистика</h2>
+    
+    <ul class="list-group mt-4" style="max-width: 400px;">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            Всего рассылок
+            <span class="fs-6">{{ total_mailings }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            Успешных попыток
+            <span class="fs-6">{{ success }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            Неуспешных попыток
+            <span class="fs-6">{{ failed }}</span>
+        </li>
+    </ul>
+</div>
+{% endblock %}

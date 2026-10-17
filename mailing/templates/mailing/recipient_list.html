@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Получатели{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Получатели</h2>
+        <a href="{% url 'mailing:recipient_create' %}" class="btn btn-primary">
+            Новый получатель
+        </a>
+    </div>
+
+    {% if recipient_list %}
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Ф.И.О.</th>
+                            <th>Email</th>
+                            <th>Комментарий</th>
+                            <th>Участвует в рассылках:</th>
+                            <th class="text-end">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recipient in recipient_list %}
+                            <tr>
+                                <td>{{ recipient.pk }}</td>
+                                <td>{{ recipient.full_name }}</td>
+                                <td>
+                                    <a href="mailto:{{ recipient.email }}">{{ recipient.email }}</a>
+                                </td>
+                                <td>{{ recipient.comments|default:"—"|truncatechars:40 }}</td>
+                                <td>{{ recipient.mailings.count }}</td>
+                                <td class="text-end text-nowrap">
+                                    <a href="{% url 'mailing:recipient_detail' recipient.pk %}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Открыть
+                                    </a>
+                                    <a href="{% url 'mailing:recipient_update' recipient.pk %}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Изменить
+                                    </a>
+                                    <a href="{% url 'mailing:recipient_delete' recipient.pk %}"
+                                       class="btn btn-sm btn-outline-danger">
+                                        Удалить
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Пока нет ни одного получателя.
+            <a href="{% url 'mailing:recipient_create' %}">Новый получатель</a>.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
